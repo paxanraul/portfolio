@@ -52,7 +52,18 @@ const projects = [
     result: 'Портфолио и услуги собраны в эмоциональный, но понятный сценарий знакомства со специалистом.'
   },
   {
-    slug: 'rafael-elvira', name: 'Rafael & Elvira', number: '05', tone: 'Плёнка · Тепло', wedding: true,
+    slug: 'sahiba', name: 'Сахиба Годжаева', number: '05', tone: 'Бартер · Реклама',
+    description: 'Портфолио фотографа из Москвы. Выразительная редакционная композиция, крупные фотографии и спокойная навигация знакомят с автором и её съёмками — от свадеб до семейных историй.',
+    tags: ['Фотограф', 'Портфолио', 'Личный бренд', 'Лендинг', 'Бартер'],
+    liveUrl: 'https://paxanraul.github.io/sahiba-portfolio/',
+    images: ['sahiba-01.png', 'sahiba-02.png', 'sahiba-03.png'].map(image),
+    about: 'Портфолио московского фотографа Сахибы Годжаевой, созданное в рамках рекламного бартера.',
+    task: 'Передать личный стиль фотографа, показать направления съёмки и привести посетителя к быстрому контакту.',
+    visual: 'Светлая журнальная композиция, контрастная типографика и крупные фотографии оставляют главным героем кадр и эмоцию.',
+    result: 'Получилась эмоциональная витрина работ с понятным переходом в Telegram для обсуждения съёмки.'
+  },
+  {
+    slug: 'rafael-elvira', name: 'Rafael & Elvira', number: '06', tone: 'Плёнка · Тепло', wedding: true,
     description: 'Лаконичное свадебное приглашение с тёплой плёночной эстетикой. Спокойная типографика и личные фотографии создают ощущение камерной истории пары.',
     tags: ['Свадебное приглашение', 'Персональный сайт', 'Анимация', 'Mobile-first'],
     images: ['rafael-elvira-01.png', 'rafael-elvira-02.png', 'rafael-elvira-03.png'].map(image),
@@ -62,7 +73,7 @@ const projects = [
     result: 'Получилось искреннее цифровое приглашение, удобное для просмотра и отправки с телефона.'
   },
   {
-    slug: 'emil-sevda', name: 'Emil & Sevda', number: '06', tone: 'Фото · Ритм', wedding: true,
+    slug: 'emil-sevda', name: 'Emil & Sevda', number: '07', tone: 'Фото · Ритм', wedding: true,
     description: 'Современное свадебное приглашение, построенное вокруг крупных фотографий пары и выразительной типографики. Информация о событии подана как цельная визуальная история.',
     tags: ['Свадебное приглашение', 'Персональный сайт', 'Анимация', 'Mobile-first'],
     images: ['emil-sevda-01.png', 'emil-sevda-02.png', 'emil-sevda-03.png'].map(image),
@@ -72,7 +83,7 @@ const projects = [
     result: 'Гости получают личное приглашение и всю практическую информацию в одном цельном формате.'
   },
   {
-    slug: 'elgun-samina', name: 'Elgun & Samina', number: '07', tone: 'Два языка · Детали', wedding: true,
+    slug: 'elgun-samina', name: 'Elgun & Samina', number: '08', tone: 'Два языка · Детали', wedding: true,
     description: 'Персональное свадебное приглашение на двух языках. История пары, программа мероприятия, обратный отсчёт, дресс-код и удобный переход к локации.',
     tags: ['Свадебное приглашение', 'Двуязычный сайт', 'Таймер', 'Анимация', 'Mobile-first'],
     liveUrl: 'https://www.elgunsamina.ru',
@@ -83,7 +94,7 @@ const projects = [
     result: 'Все детали события доступны гостям с телефона, а двуязычная подача остаётся лёгкой и цельной.'
   },
   {
-    slug: 'ramik-mariam', name: 'Ramik & Mariam', number: '08', tone: 'Свет · Восток', wedding: true,
+    slug: 'ramik-mariam', name: 'Ramik & Mariam', number: '09', tone: 'Свет · Восток', wedding: true,
     description: 'Интерактивное свадебное приглашение с эффектом раскрывающегося занавеса. Светлая восточная эстетика, календарь, таймер, время сбора гостей и маршрут до площадки.',
     tags: ['Свадебное приглашение', 'Интерактивный сайт', 'Таймер', 'Анимация', 'Mobile-first'],
     liveUrl: 'https://ramikmariam.ru',
@@ -217,12 +228,12 @@ function Home({ theme, toggleTheme }) {
 
       <section className="projects" id="projects" aria-labelledby="projects-title">
         <div className="section-heading reveal">
-          <p>Избранные работы · 08</p>
+          <p>Избранные работы · {String(projects.length).padStart(2, '0')}</p>
           <h2 id="projects-title">Мои проекты</h2>
         </div>
         <div className="project-list">
           {projects.map((project, index) => <React.Fragment key={project.slug}>
-            {index === 4 && <div className="collection-marker reveal"><span>Отдельная коллекция</span><div><h3>Серия свадебных приглашений</h3><p>Персональные сайты для особенных событий.</p></div></div>}
+            {index === 5 && <div className="collection-marker reveal"><span>Отдельная коллекция</span><div><h3>Серия свадебных приглашений</h3><p>Персональные сайты для особенных событий.</p></div></div>}
             <ProjectCard project={project} />
           </React.Fragment>)}
         </div>

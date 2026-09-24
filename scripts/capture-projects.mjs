@@ -15,6 +15,7 @@ const sites = [
   { slug: 'auto-prestige', name: 'Престиж Авто', url: 'https://odintsovo-auto-prestige.ru', positions: [0, .35, .75] },
   { slug: 'oymari', name: 'Oymari', url: 'https://oymari.ru', positions: [0, .42, .88] },
   { slug: 'gunay', name: 'Gunay', url: 'https://gunay-weddingsevents.ru/', positions: [0, .24, .72] },
+  { slug: 'sahiba', name: 'Сахиба Годжаева', url: 'https://paxanraul.github.io/sahiba-portfolio/', positions: [0, .34, .78] },
   {
     slug: 'elgun-samina', name: 'Elgun & Samina', url: 'https://www.elgunsamina.ru', positions: [0, .4, .78],
     desktopCrop: { left: 360, top: 0, width: 2160, height: 1350 },
