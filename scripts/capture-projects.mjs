@@ -15,7 +15,7 @@ const sites = [
   { slug: 'auto-prestige', name: 'Престиж Авто', url: 'https://odintsovo-auto-prestige.ru', positions: [0, .35, .75] },
   { slug: 'oymari', name: 'Oymari', url: 'https://oymari.ru', positions: [0, .42, .88] },
   { slug: 'gunay', name: 'Gunay', url: 'https://gunay-weddingsevents.ru/', positions: [0, .24, .72] },
-  { slug: 'sahiba', name: 'Сахиба Годжаева', url: 'https://paxanraul.github.io/sahiba-portfolio/', positions: [0, .34, .78] },
+  { slug: 'sahiba', name: 'Сахиба Годжаева', url: 'https://paxanraul.github.io/sahiba-portfolio/', positions: [0, .34, .78], phoneOnly: true },
   {
     slug: 'elgun-samina', name: 'Elgun & Samina', url: 'https://www.elgunsamina.ru', positions: [0, .4, .78],
     desktopCrop: { left: 360, top: 0, width: 2160, height: 1350 },
@@ -76,7 +76,35 @@ function frameSvg(name, url, shotNumber) {
   `);
 }
 
+function phoneFrameSvg(name, url, shotNumber) {
+  const safeName = name.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  const host = new URL(url).hostname.replace('www.', '');
+  return Buffer.from(`
+    <svg width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+      <text x="48" y="54" fill="#edf3ff" font-family="Arial, sans-serif" font-size="21" font-weight="600">${safeName}</text>
+      <text x="1232" y="54" fill="#6f88b8" font-family="Arial, sans-serif" font-size="12" text-anchor="end" letter-spacing="1.6">${host.toUpperCase()} · 0${shotNumber}</text>
+      <circle cx="63" cy="76" r="3.5" fill="#6699ff"/>
+      <circle cx="77" cy="76" r="3.5" fill="#31466d"/>
+      <circle cx="91" cy="76" r="3.5" fill="#263552"/>
+      <rect x="484" y="34" width="312" height="652" rx="39" fill="none" stroke="#8aafff" stroke-opacity=".58" stroke-width="2"/>
+      <rect x="588" y="43" width="104" height="9" rx="5" fill="#101725" stroke="#8aafff" stroke-opacity=".28"/>
+    </svg>
+  `);
+}
+
 async function compose(site, desktopBuffer, mobileBuffer, index) {
+  if (site.phoneOnly) {
+    const mobile = await sharp(mobileBuffer).resize(294, 636, { fit: 'cover', position: 'top' }).png().toBuffer();
+    await sharp({ create: { width: 1280, height: 720, channels: 4, background: '#080b11' } })
+      .composite([
+        { input: mobile, left: 493, top: 42 },
+        { input: phoneFrameSvg(site.name, site.url, index + 1), left: 0, top: 0 },
+      ])
+      .png({ compressionLevel: 9 })
+      .toFile(path.join(outputDir, `${site.slug}-0${index + 1}.png`));
+    return;
+  }
+
   let desktopSource = sharp(desktopBuffer);
   if (site.desktopCrop) desktopSource = desktopSource.extract(site.desktopCrop);
 
@@ -105,16 +133,16 @@ const browser = await puppeteer.launch({
 try {
   for (const site of sites.filter((site) => !targetSlugs.size || targetSlugs.has(site.slug))) {
     process.stdout.write(`Capturing ${site.name}... `);
-    const desktopPage = await browser.newPage();
+    const desktopPage = site.phoneOnly ? null : await browser.newPage();
     const mobilePage = await browser.newPage();
-    await preparePage(desktopPage, { width: 1440, height: 900, deviceScaleFactor });
+    if (desktopPage) await preparePage(desktopPage, { width: 1440, height: 900, deviceScaleFactor });
     await preparePage(mobilePage, { width: 390, height: 844, deviceScaleFactor, isMobile: true, hasTouch: true });
     try {
-      await Promise.all([loadPage(desktopPage, site.url), loadPage(mobilePage, site.url)]);
+      await Promise.all([desktopPage && loadPage(desktopPage, site.url), loadPage(mobilePage, site.url)]);
       for (let index = 0; index < site.positions.length; index += 1) {
-        await Promise.all([scrollToRatio(desktopPage, site.positions[index]), scrollToRatio(mobilePage, site.positions[index])]);
+        await Promise.all([desktopPage && scrollToRatio(desktopPage, site.positions[index]), scrollToRatio(mobilePage, site.positions[index])]);
         const [desktop, mobile] = await Promise.all([
-          desktopPage.screenshot({ type: 'png' }),
+          desktopPage ? desktopPage.screenshot({ type: 'png' }) : null,
           mobilePage.screenshot({ type: 'png' }),
         ]);
         await compose(site, desktop, mobile, index);
@@ -123,7 +151,7 @@ try {
     } catch (error) {
       console.log(`failed: ${error.message}`);
     } finally {
-      await desktopPage.close();
+      await desktopPage?.close();
       await mobilePage.close();
     }
   }
